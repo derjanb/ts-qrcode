@@ -9,7 +9,7 @@ export { QRErrorCorrectLevel } from './constants'
 export class QRCode {
   typeNumber: number
   errorCorrectLevel: number
-  modules: boolean[][]
+  modules: (boolean | null)[][]
   moduleCount: number
   dataCache: any
   dataList: QR8bitByte[]
@@ -17,7 +17,7 @@ export class QRCode {
   constructor (typeNumber: number, errorCorrectLevel: number) {
     this.typeNumber = typeNumber
     this.errorCorrectLevel = errorCorrectLevel
-    this.modules = null
+    this.modules = []
     this.moduleCount = 0
     this.dataCache = null
     this.dataList = []
@@ -376,6 +376,7 @@ export class QRCode {
     canvas.width = opt.width
     canvas.height = opt.height
     const ctx = canvas.getContext('2d')
+    if (!ctx) throw new Error('Unable to get 2d context')
 
     const tileW = opt.width / qrcode.getModuleCount()
     const tileH = opt.height / qrcode.getModuleCount()
@@ -392,6 +393,7 @@ export class QRCode {
 
   static setCanvas (id: string, options: any) {
     const parent = document.getElementById(id)
+    if (!parent) throw new Error('Unable to find parent element')
     parent.innerHTML = ''
     parent.appendChild(QRCode.createCanvas(options))
   }
